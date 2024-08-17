@@ -17,10 +17,11 @@ jobs:
       image_tag: ${{ secrets.DOCKERHUB_USERNAME }}/${{ env.APP_NAME }}:${{ env.VERSION }}
 
     steps:
-      - name: checkout
-        uses: actions/checkout@v4
-      - name: load configuration
-        run: load conf
+      - name: load conf
+        run: echo "load conf"
+      # - name: checkout
+      #   uses: actions/checkout@v4
+
 
   build-and-test:
     runs-on: ubuntu-latest
