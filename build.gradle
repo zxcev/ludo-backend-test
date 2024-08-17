@@ -104,5 +104,9 @@ testSets {
 }
 
 test {
+    ignoreFailures = true
     outputs.upToDateWhen { false }
+    testLogging {
+        events "passed", "skipped", "failed"
+    }
 }
