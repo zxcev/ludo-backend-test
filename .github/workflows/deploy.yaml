@@ -33,8 +33,10 @@ jobs:
       uses: gradle/actions/setup-gradle@v4
 
     - name: build with gradle
-      run: ./gradlew build -x test
+      run: ./gradlew build -x test -Dspring.profiles.active=prod
 
     - name: test with gradle
-      run: ./gradlew test
+      env:
+        TESTCONTAINERS_RYUK_DISABLED: true
+      run: ./gradlew test -Dspring.profiles.active=test
 
