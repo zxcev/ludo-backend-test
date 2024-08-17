@@ -4,7 +4,6 @@ on:
       - main
 
 env:
-  APP_NAME: ludo
   ENV: prod
   VERSION: 1.0.0
 
@@ -13,8 +12,8 @@ jobs:
     runs-on: ubuntu-latest
 
     outputs:
-      artifact: ${{ env.APP_NAME }}-${{ env.VERSION }}.jar 
-      image_tag: ${{ secrets.DOCKERHUB_USERNAME }}/${{ env.APP_NAME }}:${{ env.VERSION }}
+      artifact: ${{ vars.APP_NAME }}-${{ env.VERSION }}.jar 
+      image_tag: ${{ vars.DOCKERHUB_USERNAME }}/${{ vars.APP_NAME }}:${{ env.VERSION }}
 
     steps:
       - name: load conf
