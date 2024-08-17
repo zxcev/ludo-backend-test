@@ -1,0 +1,40 @@
+on:
+  push:
+    branches:
+      - main
+
+jobs:
+ build:
+  runs-on: ubuntu-latest
+  steps:
+    - name: checkout code and submodules
+      uses: actions/checkout@v4
+      with:
+        token: ${{ secrets.PAT }}
+        submodules: 'recursive'
+
+    - name: setup Java
+      uses: actions/setup-java@v4
+      with:
+        java-version: '17'
+        distribution: 'temurin'
+
+    - name: cache gradle packages
+      uses: actions/cache@v3
+      with:
+        path: |
+          ~/.gradle/caches
+          ~/.gradle/wrapper
+        key: ${{ runner.os }}-gradle-${{hashFiles('**/*.gradle*', '**/gradle-wrapper.properties') }}
+        restore-keys: |
+          ${{ runner.os }}-gradle-
+
+    - name: setup gradle
+      uses: gradle/actions/setup-gradle@v4
+
+    - name: build with gradle
+      run: ./gradlew build
+
+    - name: test with gradle
+      run: ./gradlew test
+

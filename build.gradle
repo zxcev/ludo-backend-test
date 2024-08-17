@@ -82,6 +82,7 @@ clean {
 }
 tasks.withType(JavaCompile) {
     options.generatedSourceOutputDirectory = file(querydslSrcDir)
+    options.incremental = true
 }
 
 tasks.withType(Test) {
@@ -102,4 +103,6 @@ testSets {
     integrationTest
 }
 
-
+test {
+    outputs.upToDateWhen { false }
+}
