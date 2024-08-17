@@ -3,40 +3,66 @@ on:
     branches:
       - main
 
+env:
+  APP_NAME: ludo
+  ENV: prod
+  VERSION: 1.0.0
+
 jobs:
- build:
-  runs-on: ubuntu-latest
-  steps:
-    - name: checkout code and submodules
-      uses: actions/checkout@v4
-      with:
-        token: ${{ secrets.PAT }}
-        submodules: 'recursive'
+  conf:
+    runs-on: ubuntu-latest
+    outputs:
+      artifact: ${{ env.APP_NAME }}-${{ env.VERSION }}.jar 
+      image_tag: ${{ secrets.DOCKERHUB_USERNAME }}/${{ env.APP_NAME }}:${{ env.VERSION }}
 
-    - name: setup Java
-      uses: actions/setup-java@v4
-      with:
-        java-version: '17'
-        distribution: 'temurin'
+  build-and-test:
+    runs-on: ubuntu-latest
+    needs: conf
 
-    - name: cache gradle packages
-      uses: actions/cache@v3
-      with:
-        path: |
-          ~/.gradle/caches
-          ~/.gradle/wrapper
-        key: ${{ runner.os }}-gradle-${{hashFiles('**/*.gradle*', '**/gradle-wrapper.properties') }}
-        restore-keys: |
-          ${{ runner.os }}-gradle-
+    steps:
+      - name: checkout code and submodules
+        uses: actions/checkout@v4
+        with:
+          token: ${{ secrets.PAT }}
+          submodules: 'recursive'
 
-    - name: setup gradle
-      uses: gradle/actions/setup-gradle@v4
+      - name: setup Java
+        uses: actions/setup-java@v4
+        with:
+          java-version: '17'
+          distribution: 'temurin'
 
-    - name: build with gradle
-      run: ./gradlew build -x test -Dspring.profiles.active=prod
+      - name: cache gradle packages
+        uses: actions/cache@v3
+        with:
+          path: |
+            ~/.gradle/caches
+            ~/.gradle/wrapper
+          key: ${{ runner.os }}-gradle-${{hashFiles('**/*.gradle*', '**/gradle-wrapper.properties') }}
+          restore-keys: |
+            ${{ runner.os }}-gradle-
 
-    - name: test with gradle
-      env:
-        TESTCONTAINERS_RYUK_DISABLED: true
-      run: ./gradlew test -Dspring.profiles.active=test
+      - name: setup gradle
+        uses: gradle/actions/setup-gradle@v4
+
+      - name: build with gradle
+        run: ./gradlew build -x test -Dspring.profiles.active=prod -ParchiveName=build/libs/${{ needs.conf.outputs.artifact }}
+
+      - name: test with gradle
+        env:
+          TESTCONTAINERS_RYUK_DISABLED: true
+        run: ./gradlew test -Dspring.profiles.active=test
+
+      - name: log in to dockerhub
+        uses: docker/login-action@v2
+        with:
+          username: ${{ secrets.DOCKERHUB_USERNAME }}
+          password: ${{ secrets.DOCKERHUB_TOKEN }}
+      
+      - name: push docker image
+        uses: docker/build-push-action@v4
+        with:
+          context: .
+          push: true
+          tags: ${{ needs.conf.outputs.image_tag }}
 
