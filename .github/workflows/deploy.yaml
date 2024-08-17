@@ -11,11 +11,14 @@ env:
 jobs:
   conf:
     runs-on: ubuntu-latest
+
     outputs:
       artifact: ${{ env.APP_NAME }}-${{ env.VERSION }}.jar 
       image_tag: ${{ secrets.DOCKERHUB_USERNAME }}/${{ env.APP_NAME }}:${{ env.VERSION }}
 
     steps:
+      - name: checkout
+        uses: actions/checkout@v4
       - name: load configuration
         run: load conf
 
