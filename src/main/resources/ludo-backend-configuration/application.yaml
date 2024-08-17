@@ -1,0 +1,112 @@
+spring:
+  devtools:
+    livereload:
+      enabled: true
+
+  datasource:
+    url: jdbc:mysql://localhost:3306/ludo
+    username: root
+    password: root
+    driver-class-name: com.mysql.cj.jdbc.Driver
+
+  data:
+    redis:
+      host: localhost # 로컬에서 테스트 할 때는 localhost 사용
+      port: 6379
+      password: ludoredis777!
+
+  jpa:
+    hibernate:
+      ddl-auto: create
+
+    properties:
+      hibernate:
+        dialect: org.hibernate.dialect.MySQL8Dialect
+        format_sql: true
+        default_batch_fetch_size: 1000
+
+    open-in-view: false
+
+oauth2:
+  client:
+    registration:
+      naver:
+        client-id: V9GiBd_m8pFGJFQqtAVL
+        client-secret: ETIXZl1wLa
+        login-redirect-uri: http://localhost:8080/api/auth/login/naver/callback
+        signup-redirect-uri: http://localhost:8080/api/auth/signup/naver/callback
+      kakao:
+        client-id: ed54c5ca30a1f77a6a017194159af556
+        client-secret: 0lortXKR3XPY1KUSsRnrWVMdyl0Csz9O
+        login-redirect-uri: http://localhost:8080/api/auth/login/kakao/callback
+        signup-redirect-uri: http://localhost:8080/api/auth/signup/kakao/callback
+      google:
+        client-id: 497023308362-v0ldm3v1i4rcent1mubpn82bhj7qslev.apps.googleusercontent.com
+        client-secret: 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
+        login-redirect-uri: http://localhost:8080/api/auth/login/google/callback
+        signup-redirect-uri: http://localhost:8080/api/auth/signup/google/callback
+    provider:
+      naver:
+        authorization-uri: https://nid.naver.com/oauth2.0/authorize
+        token-uri: https://nid.naver.com/oauth2.0/token
+        user-info-uri: https://openapi.naver.com/v1/nid/me
+        authorization-grant-type: authorization_code
+      kakao:
+        authorization-uri: https://kauth.kakao.com/oauth/authorize
+        token-uri: https://kauth.kakao.com/oauth/token
+        user-info-uri: https://kapi.kakao.com/v2/user/me
+        authorization-grant-type: authorization_code
+      google:
+        authorization-uri: https://accounts.google.com/o/oauth2/v2/auth
+        token-uri: https://oauth2.googleapis.com/token
+        user-info-uri: https://www.googleapis.com/userinfo/v2/me
+        authorization-grant-type: authorization_code
+jwt:
+  token:
+    secret-key: 7J206rKD7J2AIO2MqOyKpOybjOuTnCDsnoXri4jri6Qu
+    access-token-expiresin: 1800000 # 30분
+    refresh-token-expiresin: 604800000 # 7일
+
+client:
+  scheme: http
+  domain: localhost
+  url: http://localhost:8080
+
+logging.level:
+  org.hibernate.SQL: debug
+  org.hibernate.type: trace
+
+management:
+  info:
+    java:
+      enabled: true
+    os:
+      enabled: true
+    env:
+      enabled: true
+    build:
+      enabled: true
+    defaults:
+      enabled: true
+  endpoint:
+    health:
+      show-components: always
+    prometheus:
+      enabled: true
+  endpoints:
+    web:
+      exposure:
+        include: "*"
+  server:
+    port:
+      9999
+
+server:
+  port: 8080
+  tomcat:
+    mbeanregistry:
+      enabled: true
+
+springdoc:
+  swagger-ui:
+    path: /api/swagger-ui.html
