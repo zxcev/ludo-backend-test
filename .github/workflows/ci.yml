@@ -44,7 +44,7 @@ jobs:
     steps:
       - uses: actions/checkout@v4
       - name: setup
-        uses: ./.github/workflows/actions/setup
+        uses: ./.github/workflows/actions/build_and_upload_artifact
         with:
           env: ${{ env.ENV }}
           pat: ${{ secrets.PAT }}
