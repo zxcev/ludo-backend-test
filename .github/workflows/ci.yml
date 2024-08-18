@@ -33,7 +33,7 @@ jobs:
           # fi
         id: cfg-id
         run: |
-          DATE=$(date +%y%2%d)
+          DATE=$(date +%y%m%d)
           COMMIT_HASH=${GITHUB_SHA::7}
           echo "artifact-with-tag=${{ env.APP_NAME }}:${{ DATE }}-${{ COMMIT_HASH }}-${{ env.ENV }}" >> $GITHUB_OUTPUT
         # <app>-<env>-<date>-<hash>
@@ -65,7 +65,7 @@ jobs:
         with:
           env: ${{ env.ENV }}
           pat: ${{ secrets.PAT }}
-          artifact_name: ${{ needs.cfg.outputs.artifact_with_tag }}
+          artifact_name: ${{ needs.cfg.outputs.artifact-with-tag }}
           artifact_build_dir: ${{ env.ARTIFACT_BUILD_DIR }}
 
   # JOB4-1 Unit Test
@@ -120,7 +120,7 @@ jobs:
       - name: download artifact
           uses: actions/download-artifact@v3
           with:
-            name: ${{ needs.cfg.outputs.artifact_with_tag }}
+            name: ${{ needs.cfg.outputs.artifact-with-tag }}
             path: ${{ env.ARTIFACT_BUILD_DIR }}
 
       - name: log in to dockerhub
@@ -134,7 +134,7 @@ jobs:
         with:
           context: .
           push: true
-          tags: "${{ secrets.DOCKERHUB_USERNAME }}/${{ needs.cfg.outputs.artifact_with_tag }}"
+          tags: "${{ secrets.DOCKERHUB_USERNAME }}/${{ needs.cfg.outputs.artifact-with-tag }}"
 
   # # notification:
   # #   needs: [trigger-test-infra-provision, conf, build-and-test]

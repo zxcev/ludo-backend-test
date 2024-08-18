@@ -20,7 +20,7 @@ runs:
 
     - name: build with gradle
       shell: bash
-      run: ./gradlew build -x test -Dspring.profiles.action=${{ inputs.env }} -ParchiveName=${{ inputs.artifact_build_dir }}/${{ inputs.artifact_name }}
+      run: ./gradlew build -x test -Dspring.profiles.action=${{ inputs.env }} -ParchiveName=${{ inputs.artifact_build_dir }}/${{ inputs.artifact_name }}.jar
 
     - name: upload artifact
       uses: actions/upload-artifact@v4
