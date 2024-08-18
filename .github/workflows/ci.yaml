@@ -51,7 +51,7 @@ jobs:
     steps:
       - uses: actions/checkout@v4
       - name: setup
-        uses: ./.github/workflows/reusable_workflows/setup.yaml
+        uses: ./.github/workflows/actions/setup
         with:
           token: ${{ secrets.PAT }}
 
