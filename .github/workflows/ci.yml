@@ -16,21 +16,29 @@ on:
 env:
   ENV: ${{ github.ref == 'ref/heads/main' && 'prod' || 'stag' }}
   VERSION: 1.0.0
+  APP_NAME: ludo
   ARTIFACT_BUILD_DIR: _build
   INFRA_REPOSITORY: zxcev/ludo-infra
   PROVISION_INFRA_EVENT: provision_test_infra
-
 jobs:
   # JOB1: CONF
-  conf:
+  cfg:
     runs-on: ubuntu-latest
+    outputs:
+      artifact-with-tag: ${{ steps.cfg.outputs.artifact-with-tag }}
     steps:
       - name: set environment variables
           # if [[ ${{ github.ref }} == 'ref/heads/main' ]]; then
           #   echo "ENV=prod" >> $GITHUB_ENV
           # fi
+        id: cfg-id
         run: |
-          echo "ARTIFACT_NAME=${{ vars.APP_NAME }}-${{ env.VERSION }}.jar" >> $GITHUB_ENV
+          DATE=$(date +%y%2%d)
+          COMMIT_HASH=${GITHUB_SHA::7}
+          echo "artifact-with-tag=${{ env.APP_NAME }}-${{ DATE }}-${{ COMMIT_HASH }}-${{ env.ENV }}" >> $GITHUB_OUTPUT
+        # <app>-<env>-<date>-<hash>
+        # ludo:240101-510f224-dev
+
 
   # JOB2: TRIGGER TEST INFRASTRUCTURE PROVISIONING
   trigger-test-infra-provision:
@@ -47,7 +55,7 @@ jobs:
 
   # JOB3: BUILD
   build:
-    needs: conf
+    needs: cfg
     runs-on: ubuntu-latest
 
     steps:
@@ -57,7 +65,7 @@ jobs:
         with:
           env: ${{ env.ENV }}
           pat: ${{ secrets.PAT }}
-          artifact_name: ${{ env.ARTIFACT_NAME }}
+          artifact_name: ${{ needs.cfg.outputs.artifact_with_tag }}
           artifact_build_dir: ${{ env.ARTIFACT_BUILD_DIR }}
 
   # JOB4-1 Unit Test
@@ -88,7 +96,7 @@ jobs:
           pat: ${{ secrets.PAT }}
 
       - name: do integration test
-        run: fake integration test
+        run: echo "fake integration test"
 
   # # JOB4-3 E2E Test
   e2e-test:
@@ -101,12 +109,12 @@ jobs:
           pat: ${{ secrets.PAT }}
 
       - name: do e2e test
-        run: fake e2e test
+        run: echo "fake e2e test"
 
   # # JOB5 BUILD CONTAINER IMAGE WITH JAR EXECUTABLE AND ENV
   containerization:
     env:
-      CONTAINER_IMAGE_NAME: "${{ vars.DOCKERHUB_USERNAME }}/${{ vars.APP_NAME }}:${{ env.VERSION }}"
+      CONTAINER_IMAGE_NAME: "${{ vars.DOCKERHUB_USERNAME }}/${{ needs.cfg.outputs.artifact_with_tag }}"
 
     needs: [unit-test, integration-test, e2e-test]
     runs-on: ubuntu-latest
@@ -115,7 +123,7 @@ jobs:
       - name: download artifact
           uses: actions/download-artifact@v3
           with:
-            name: ${{ env.ARTIFACT_FILE_NAME }}
+            name: ${{ needs.cfg.outputs.artifact_with_tag }}
             path: ${{ env.ARTIFACT_BUILD_DIR }}
 
       - name: log in to dockerhub
@@ -129,7 +137,7 @@ jobs:
         with:
           context: .
           push: true
-          tags: ${{ env.CONTAINER_IMAGE_NAME }}
+          tags: ${{ needs.cfg.outputs.artifact_with_tag }}
 
   # # notification:
   # #   needs: [trigger-test-infra-provision, conf, build-and-test]
@@ -139,7 +147,7 @@ jobs:
   # #     - name: check job status
   # #       env:
   # #         INFRA_STATUS: ${{ needs.trigger-test-infra-provision.result }}
-  # #         CONF_STATUS: ${{ needs.conf.result }}
+  # #         CONF_STATUS: ${{ needs.cfg.result }}
   # #         BUILD_TEST_STATUS: ${{ needs.build-and-test.result }}
   # #         run: |
   # #           echo "Infra Provision status: $INFRA_STATUS"
