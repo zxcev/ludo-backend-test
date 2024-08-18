@@ -9,7 +9,7 @@ on:
 
 env:
   ENV: prod
-  VERSION: 1.0.0
+  VERSION: "1.0.0"
   ARTIFACT_BUILD_DIR: _build
   ARTIFACT_FILE_NAME: ${{ vars.APP_NAME }}-${{ env.VERSION }}.jar
   PROVISION_INFRA_EVENT: provision_infra
