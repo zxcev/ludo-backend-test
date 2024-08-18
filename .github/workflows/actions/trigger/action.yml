@@ -19,8 +19,6 @@ outputs:
     description: triggered workflow conclusion(success or failure)
     value: ${{ steps.conclusion.outputs.conclusion }}
 
-env:
-  GH_TOKEN: ${{ inputs.pat }}
 runs:
   using: composite
 
@@ -48,6 +46,8 @@ runs:
 
     - name: fetch RUN_ID
       shell: bash
+      env:
+        GH_TOKEN: ${{ inputs.pat }}
       run: |
         RUN_ID=$(gh run list -R ${{ inputs.repository }} -w ${{ inputs.action_file }} -L 1 --json databaseId -q '.[0].databaseId')
         echo "Triggered workflow RUN_ID: $RUN_ID"
@@ -55,6 +55,8 @@ runs:
 
     - name: wait for completion
       shell: bash
+      env:
+        GH_TOKEN: ${{ inputs.pat }}
       run: |
         START_TIME=$(date +%s)
         TIMEOUT=3600
@@ -76,6 +78,8 @@ runs:
     - name: evaluate conclusion
       id: conclusion
       shell: bash
+      env:
+        GH_TOKEN: ${{ inputs.pat }}
       run: |
         CONCLUSION=$(gh run view ${{ env.RUN_ID}} -R ${{ inputs.repository }} --json conclusion -q '.conclusion')
         if [ "$CONCLUSION" = "success" ]; then
