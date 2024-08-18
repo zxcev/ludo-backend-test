@@ -11,7 +11,7 @@ jobs:
       env: ${{ steps.step1.outputs.env }}
     steps:
       - name: step1
-        id: job1
+        id: x
         run: |
           echo "ENV: ${{env.ENV}}"
           echo "ENV=xxx" >> $GITHUB_ENV
@@ -27,4 +27,4 @@ jobs:
       - name: step2-1
         run: |
           echo ${{ env.ENV }}
-          echo "job1.step1 env: ${{ needs.job1.outputs.env }}"
+          echo "job1.step1 env: ${{ needs.x.outputs.env }}"
