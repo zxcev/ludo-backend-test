@@ -49,6 +49,7 @@ jobs:
     runs-on: ubuntu-latest
 
     steps:
+      - uses: actions/checkout@v4
       - name: setup
         uses: ./.github/workflows/reusable_workflows/setup.yaml
         with:
