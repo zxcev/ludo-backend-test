@@ -14,6 +14,7 @@ on:
   workflow_dispatch:
 
 env:
+  ENV: ${{ github.ref == 'ref/heads/main' && 'prod' || 'stag' }}
   VERSION: 1.0.0
   ARTIFACT_BUILD_DIR: _build
   INFRA_REPOSITORY: zxcev/ludo-infra
@@ -25,10 +26,10 @@ jobs:
     runs-on: ubuntu-latest
     steps:
       - name: set environment variables
+          # if [[ ${{ github.ref }} == 'ref/heads/main' ]]; then
+          #   echo "ENV=prod" >> $GITHUB_ENV
+          # fi
         run: |
-          if [[ ${{ github.ref }} == 'ref/heads/main' ]]; then
-            echo "ENV=prod" >> $GITHUB_ENV
-          fi
           echo "ARTIFACT_NAME=${{ vars.APP_NAME }}-${{ env.VERSION }}.jar" >> $GITHUB_ENV
 
   # JOB2: TRIGGER TEST INFRASTRUCTURE PROVISIONING
