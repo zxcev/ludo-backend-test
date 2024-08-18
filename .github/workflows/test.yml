@@ -27,4 +27,4 @@ jobs:
       - name: step2-1
         run: |
           echo ${{ env.ENV }}
-          echo "job1.step1 env: ${{ needs.x.outputs.env }}"
+          echo "job1.step1 env: ${{ steps.x.outputs.env }}"
