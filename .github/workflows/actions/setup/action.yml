@@ -1,15 +1,17 @@
 name: setup java & gradle with cache
 description: Set up Java and Gradle and then do caching
+
 inputs:
-  token:
+  pat:
     required: true
+
 runs:
   using: composite
   steps:
     - name: checkout code and submodules
       uses: actions/checkout@v4
       with:
-        token: ${{ inputs.token }}
+        token: ${{ inputs.pat }}
         submodules: "recursive"
 
     - name: setup java 17

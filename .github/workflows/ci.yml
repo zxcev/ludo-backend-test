@@ -27,24 +27,13 @@ jobs:
   trigger-test-infra-provision:
     runs-on: ubuntu-latest
     steps:
-      - name: generate token
-        id: infra
-        run: echo "token=$(openssl rand -hex 16)" >> $GITHUB_OUTPUT
-
-      - name: trigger infrastructure provisioning for test
-        uses: peter-evans/repository-dispatch@v2
+      - name:
+        uses: ./.github/workflows/actions/trigger
         with:
-          # secrets.GITHUB_TOKEN doesn't have access permission to other repositories
-          # so use pat
-          token: ${{ secrets.PAT }}
+          pat: ${{ secrets.PAT }}
           repository: ${{ env.INFRA_REPOSITORY }}
-          event-type: ${{ env.PROVISION_INFRA_EVENT }}
-          client-payload: |
-            {
-              "trigger_repo": "${{ github.repository }}",
-              "trigger_sha": "${{ github.sha }}",
-              "verification_token": "${{ steps.infra.outputs.token }}"
-            }
+          event_type: ${{ env.PROVISION_INFRA_EVENT }}
+          action_file: test-provision
 
   # JOB3: BUILD
   build:
