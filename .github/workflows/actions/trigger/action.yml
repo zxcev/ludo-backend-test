@@ -26,7 +26,6 @@ runs:
     - uses: actions/checkout@v4
     - name: generate token
       id: infra
-      shell: bash
       run: echo "token=$(openssl rand -hex 16)" >> $GITHUB_OUTPUT
 
     - name: dispatch event to a specific Github repository
@@ -45,7 +44,6 @@ runs:
           }
 
     - name: fetch RUN_ID
-      shell: bash
       env:
         GH_TOKEN: ${{ inputs.pat }}
       run: |
@@ -54,7 +52,6 @@ runs:
         echo "RUN_ID=$RUN_ID" >> $GITHUB_ENV
 
     - name: wait for completion
-      shell: bash
       env:
         GH_TOKEN: ${{ inputs.pat }}
       run: |
@@ -77,7 +74,6 @@ runs:
 
     - name: evaluate conclusion
       id: conclusion
-      shell: bash
       env:
         GH_TOKEN: ${{ inputs.pat }}
       run: |
