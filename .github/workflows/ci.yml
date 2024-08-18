@@ -119,7 +119,8 @@ jobs:
 
   # # JOB5 BUILD CONTAINER IMAGE WITH JAR EXECUTABLE AND ENV
   containerization:
-    needs: [cfg, unit-test, integration-test, e2e-test]
+    needs:
+      [cfg, build-and-upload-artifact, unit-test, integration-test, e2e-test]
     runs-on: ubuntu-latest
 
     steps:
