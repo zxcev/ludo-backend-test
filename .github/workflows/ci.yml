@@ -73,16 +73,16 @@ jobs:
         run: ./gradlew test -Dspring.profiles.active=test
 
   # JOB4-2 Integration Test
-  # integration-test:
-  #   needs: [build, trigger-test-infra-provision]
-  #   runs-on: ubuntu-latest
-  #   steps:
-  #     - name: setup
-  #       uses: ./.github/workflows/actions/setup
-  #       with:
-  #         pat: ${{ secrets.PAT }}
-  #     - name: do integration test
-  #       run: fake integration test
+  integration-test:
+    needs: [build, trigger-test-infra-provision]
+    runs-on: ubuntu-latest
+    steps:
+      - name: setup
+        uses: ./.github/workflows/actions/setup
+        with:
+          pat: ${{ secrets.PAT }}
+      - name: do integration test
+        run: fake integration test
 
   # # JOB4-3 E2E Test
   # e2e-test:
