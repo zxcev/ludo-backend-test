@@ -70,12 +70,12 @@ jobs:
         with:
           env: ${{ env.ENV }}
           pat: ${{ secrets.PAT }}
-          artifact-name: ${{ needs.cfg.outputs.artifact-with-tag }}
+          artifact-with-tag: ${{ needs.cfg.outputs.artifact-with-tag }}
           artifact-build-dir: ${{ env.ARTIFACT_BUILD_DIR }}
 
   # JOB4-1 Unit Test
   unit-test:
-    needs: [build-and-upload-artifact, trigger-provision-test-infra]
+    needs: [cfg, build-and-upload-artifact, trigger-provision-test-infra]
     runs-on: ubuntu-latest
     steps:
       - uses: actions/checkout@v4
@@ -91,7 +91,7 @@ jobs:
 
   # JOB4-2 Integration Test
   integration-test:
-    needs: [build-and-upload-artifact, trigger-provision-test-infra]
+    needs: [cfg, build-and-upload-artifact, trigger-provision-test-infra]
     runs-on: ubuntu-latest
     steps:
       - uses: actions/checkout@v4
@@ -105,7 +105,7 @@ jobs:
 
   # # JOB4-3 E2E Test
   e2e-test:
-    needs: [build-and-upload-artifact, trigger-provision-test-infra]
+    needs: [cfg, build-and-upload-artifact, trigger-provision-test-infra]
     runs-on: ubuntu-latest
     steps:
       - uses: actions/checkout@v4
@@ -147,7 +147,7 @@ jobs:
           tags: ${{ env.ARTIFACT_WITH_TAG }}
 
   trigger-destroy-test-infra:
-    needs: [unit-test, integration-test, e2e-test]
+    needs: [cfg, unit-test, integration-test, e2e-test]
     runs-on: ubuntu-latest
     steps:
       - uses: actions/checkout@v4
