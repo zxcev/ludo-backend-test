@@ -34,7 +34,9 @@ jobs:
       - name: trigger infrastructure provisioning for test
         uses: peter-evans/repository-dispatch@v2
         with:
-          token: ${{ secrets.GITHUB_TOKEN }}
+          # secrets.GITHUB_TOKEN doesn't have access permission to other repositories
+          # so use pat
+          token: ${{ secrets.PAT }}
           repository: ${{ env.INFRA_REPOSITORY }}
           event-type: ${{ env.PROVISION_INFRA_EVENT }}
           client-payload: |
