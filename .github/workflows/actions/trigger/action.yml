@@ -22,6 +22,7 @@ outputs:
 runs:
   using: composite
   steps:
+    - uses: actions/checkout@v4
     - name: generate token
       id: infra
       shell: bash
