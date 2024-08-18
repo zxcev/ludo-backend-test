@@ -1,5 +1,6 @@
 name: Build container image with previously built artifact and push it to the hub
-
+# DYNAMIC VALUES
+# ENV(prod, stag)
 defaults:
   run:
     shell: bash
@@ -8,11 +9,11 @@ on:
   push:
     branches:
       - main
+      - stag
 
   workflow_dispatch:
 
 env:
-  ENV: prod
   VERSION: 1.0.0
   ARTIFACT_BUILD_DIR: _build
   INFRA_REPOSITORY: zxcev/ludo-infra
@@ -22,10 +23,13 @@ jobs:
   # JOB1: CONF
   conf:
     runs-on: ubuntu-latest
-
     steps:
       - name: set environment variables
-        run: echo "ARTIFACT_NAME=${{ vars.APP_NAME }}-${{ env.VERSION }}.jar" >> $GITHUB_ENV
+        run: |
+          if [[ ${{ github.ref }} == 'ref/heads/main' ]]; then
+            echo "ENV=prod" >> $GITHUB_ENV
+          fi
+          echo "ARTIFACT_NAME=${{ vars.APP_NAME }}-${{ env.VERSION }}.jar" >> $GITHUB_ENV
 
   # JOB2: TRIGGER TEST INFRASTRUCTURE PROVISIONING
   trigger-test-infra-provision:
@@ -99,32 +103,32 @@ jobs:
         run: fake e2e test
 
   # # JOB5 BUILD CONTAINER IMAGE WITH JAR EXECUTABLE AND ENV
-  # containerization:
-  #   env:
-  #     CONTAINER_IMAGE_NAME: "${{ vars.DOCKERHUB_USERNAME }}/${{ vars.APP_NAME }}:${{ env.VERSION }}"
+  containerization:
+    env:
+      CONTAINER_IMAGE_NAME: "${{ vars.DOCKERHUB_USERNAME }}/${{ vars.APP_NAME }}:${{ env.VERSION }}"
 
-  #   needs: [unit-test, integration-test, e2e-test]
-  #   runs-on: ubuntu-latest
+    needs: [unit-test, integration-test, e2e-test]
+    runs-on: ubuntu-latest
 
-  #   steps:
-  #     - name: download artifact
-  #         uses: actions/download-artifact@v3
-  #         with:
-  #           name: ${{ env.ARTIFACT_FILE_NAME }}
-  #           path: ${{ env.ARTIFACT_BUILD_DIR }}
+    steps:
+      - name: download artifact
+          uses: actions/download-artifact@v3
+          with:
+            name: ${{ env.ARTIFACT_FILE_NAME }}
+            path: ${{ env.ARTIFACT_BUILD_DIR }}
 
-  #     - name: log in to dockerhub
-  #       uses: docker/login-action@v2
-  #       with:
-  #         username: ${{ secrets.DOCKERHUB_USERNAME }}
-  #         password: ${{ secrets.DOCKERHUB_TOKEN }}
+      - name: log in to dockerhub
+        uses: docker/login-action@v2
+        with:
+          username: ${{ secrets.DOCKERHUB_USERNAME }}
+          password: ${{ secrets.DOCKERHUB_TOKEN }}
 
-  #     - name: push docker image
-  #       uses: docker/build-push-action@v4
-  #       with:
-  #         context: .
-  #         push: true
-  #         tags: ${{ env.CONTAINER_IMAGE_NAME }}
+      - name: push docker image
+        uses: docker/build-push-action@v4
+        with:
+          context: .
+          push: true
+          tags: ${{ env.CONTAINER_IMAGE_NAME }}
 
   # # notification:
   # #   needs: [trigger-test-infra-provision, conf, build-and-test]
