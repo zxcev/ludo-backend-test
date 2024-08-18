@@ -4,15 +4,15 @@ description: Send a workflow trigger event to another GitHub repository
 inputs:
   pat:
     required: true
-  event_type:
+  event-type:
     required: true
   repository:
     required: true
-  action_file:
+  action-file:
     required: true
 
 outputs:
-  verification_token:
+  verification-token:
     description: generated verification token
     value: ${{ steps.infra.outputs.token }}
   conclusion:
@@ -36,7 +36,7 @@ runs:
         # so use pat
         token: ${{ inputs.pat }}
         repository: ${{ inputs.repository }}
-        event-type: ${{ inputs.event_type }}
+        event-type: ${{ inputs.event-type }}
         client-payload: |
           {
             "trigger_repo": "${{ github.repository }}",
@@ -49,7 +49,7 @@ runs:
         GH_TOKEN: ${{ inputs.pat }}
       shell: bash
       run: |
-        RUN_ID=$(gh run list -R ${{ inputs.repository }} -w ${{ inputs.action_file }} -L 1 --json databaseId -q '.[0].databaseId')
+        RUN_ID=$(gh run list -R ${{ inputs.repository }} -w ${{ inputs.action-file }} -L 1 --json databaseId -q '.[0].databaseId')
         echo "Triggered workflow RUN_ID: $RUN_ID"
         echo "RUN_ID=$RUN_ID" >> $GITHUB_ENV
 

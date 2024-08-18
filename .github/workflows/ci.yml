@@ -17,7 +17,7 @@ env:
   ENV: ${{ github.ref == 'refs/heads/main' && 'prod' || 'stag' }}
   VERSION: 1.0.0
   APP_NAME: ludo
-  ARTIFACT_BUILD_DIR: _build
+  artifact-build-dir: _build
   INFRA_REPOSITORY: zxcev/ludo-infra
   PROVISION_INFRA_EVENT: provision_test_infra
 jobs:
@@ -50,11 +50,11 @@ jobs:
         with:
           pat: ${{ secrets.PAT }}
           repository: ${{ env.INFRA_REPOSITORY }}
-          event_type: ${{ env.PROVISION_INFRA_EVENT }}
-          action_file: test-provision.yml
+          event-type: ${{ env.PROVISION_INFRA_EVENT }}
+          action-file: test-provision.yml
 
   # JOB3: BUILD
-  build:
+  build-and-upload-artifact:
     needs: cfg
     runs-on: ubuntu-latest
 
@@ -65,8 +65,8 @@ jobs:
         with:
           env: ${{ env.ENV }}
           pat: ${{ secrets.PAT }}
-          artifact_name: ${{ needs.cfg.outputs.artifact-with-tag }}
-          artifact_build_dir: ${{ env.ARTIFACT_BUILD_DIR }}
+          artifact-name: ${{ needs.cfg.outputs.artifact-with-tag }}
+          artifact-build-dir: ${{ env.artifact-build-dir }}
 
   # JOB4-1 Unit Test
   unit-test:
@@ -103,6 +103,7 @@ jobs:
     needs: [build, trigger-test-infra-provision]
     runs-on: ubuntu-latest
     steps:
+      - uses: actions/checkout@v4
       - name: setup
         uses: ./.github/workflows/actions/setup
         with:
@@ -121,7 +122,7 @@ jobs:
         uses: actions/download-artifact@v3
         with:
           name: ${{ needs.cfg.outputs.artifact-with-tag }}
-          path: ${{ env.ARTIFACT_BUILD_DIR }}
+          path: ${{ env.artifact-build-dir }}
 
       - name: log in to dockerhub
         uses: docker/login-action@v2
