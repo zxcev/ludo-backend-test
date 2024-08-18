@@ -126,7 +126,7 @@ jobs:
       - name: download artifact
         uses: actions/download-artifact@v3
         with:
-          name: ${{ needs.cfg.outputs.artifact-with-tag }}
+          name: "${{ needs.cfg.outputs.artifact-with-tag }}.jar"
           path: ${{ env.ARTIFACT_BUILD_DIR }}
 
       - name: log in to dockerhub
