@@ -82,17 +82,17 @@ jobs:
         run: fake integration test
 
   # # JOB4-3 E2E Test
-  # e2e-test:
-  #   needs: [build, trigger-test-infra-provision]
-  #   runs-on: ubuntu-latest
-  #   steps:
-  #     - name: setup
-  #       uses: ./.github/workflows/actions/setup
-  #       with:
-  #         pat: ${{ secrets.PAT }}
+  e2e-test:
+    needs: [build, trigger-test-infra-provision]
+    runs-on: ubuntu-latest
+    steps:
+      - name: setup
+        uses: ./.github/workflows/actions/setup
+        with:
+          pat: ${{ secrets.PAT }}
 
-  #     - name: do e2e test
-  #       run: fake e2e test
+      - name: do e2e test
+        run: fake e2e test
 
   # # JOB5 BUILD CONTAINER IMAGE WITH JAR EXECUTABLE AND ENV
   # containerization:
