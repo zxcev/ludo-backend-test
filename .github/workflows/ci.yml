@@ -36,7 +36,7 @@ jobs:
         run: |
           DATE=$(date +%y%m%d)
           COMMIT_HASH=${GITHUB_SHA::7}
-          echo "artifact-with-tag=${{ env.APP_NAME }}:${{ DATE }}-${{ COMMIT_HASH }}-${{ env.ENV }}" >> $GITHUB_OUTPUT
+          echo "artifact-with-tag=${{ env.APP_NAME }}:$DATE-$COMMIT_HASH-${{ env.ENV }}" >> $GITHUB_OUTPUT
         # <app>-<env>-<date>-<hash>
         # ludo:240101-510f224-dev
 
