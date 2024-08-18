@@ -78,7 +78,6 @@ jobs:
         with:
           token: ${{ secrets.PAT }}
 
-
     	- name: test with gradle
         env:
           TESTCONTAINERS_RYUK_DISABLED: true
