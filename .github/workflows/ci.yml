@@ -70,7 +70,7 @@ jobs:
 
   # JOB4-1 Unit Test
   unit-test:
-    needs: [build, trigger-test-infra-provision]
+    needs: [build-and-upload-artifact, trigger-test-infra-provision]
     runs-on: ubuntu-latest
     steps:
       - uses: actions/checkout@v4
@@ -86,7 +86,7 @@ jobs:
 
   # JOB4-2 Integration Test
   integration-test:
-    needs: [build, trigger-test-infra-provision]
+    needs: [build-and-upload-artifact, trigger-test-infra-provision]
     runs-on: ubuntu-latest
     steps:
       - uses: actions/checkout@v4
@@ -100,7 +100,7 @@ jobs:
 
   # # JOB4-3 E2E Test
   e2e-test:
-    needs: [build, trigger-test-infra-provision]
+    needs: [build-and-upload-artifact, trigger-test-infra-provision]
     runs-on: ubuntu-latest
     steps:
       - uses: actions/checkout@v4
