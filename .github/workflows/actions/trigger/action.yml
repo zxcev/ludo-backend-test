@@ -19,10 +19,11 @@ outputs:
     description: triggered workflow conclusion(success or failure)
     value: ${{ steps.conclusion.outputs.conclusion }}
 
+env:
+  GH_TOKEN: ${{ inputs.pat }}
 runs:
   using: composite
-  env:
-    GH_TOKEN: ${{ inputs.pat }}
+
   steps:
     - uses: actions/checkout@v4
     - name: generate token
