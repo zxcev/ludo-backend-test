@@ -34,7 +34,7 @@ jobs:
     runs-on: ubuntu-latest
     steps:
       - name: generate token
-        id: infra_test
+        id: infra
         run: echo "token=$(openssl rand -hex 16)" >> $GITHUB_OUTPUT
 
       - name: trigger infrastructure provisioning for test
