@@ -56,6 +56,7 @@ jobs:
         with:
           name: ${{ env.ARTIFACT_FILE_NAME }}
           path: ${{ env.ARTIFACT_BUILD_DIR }}
+
   # JOB4-1 Unit Test
   unit-test:
     needs: [build, trigger-test-infra-provision]
@@ -66,73 +67,74 @@ jobs:
         with:
           pat: ${{ secrets.PAT }}
 
-    	- name: test with gradle
+      - name: test with gradle
         env:
           TESTCONTAINERS_RYUK_DISABLED: true
         run: ./gradlew test -Dspring.profiles.active=test
 
   # JOB4-2 Integration Test
-  integration-test:
-    needs: [build, trigger-test-infra-provision]
-    runs-on: ubuntu-latest
-    steps:
-      - name: setup
-        uses: ./.github/workflows/actions/setup
-        with:
-          pat: ${{ secrets.PAT }}
-      - name: do integration test
-        run: fake integration test   
-
-  # JOB4-3 E2E Test
-  e2e-test:
-    needs: [build, trigger-test-infra-provision]
-    runs-on: ubuntu-latest
-    steps:
-      - name: setup
-        uses: ./.github/workflows/actions/setup
-        with:
-          pat: ${{ secrets.PAT }}
-
-      - name: do e2e test
-        run: fake e2e test
-
-  containerization:
-    env:
-      CONTAINER_IMAGE_NAME: "${{ vars.DOCKERHUB_USERNAME }}/${{ vars.APP_NAME }}:${{ env.VERSION }}"
-
-    needs: [unit-test, integration-test, e2e-test]
-    runs-on: ubuntu-latest
-
-    steps:
-      - name: download artifact
-          uses: actions/download-artifact@v3
-          with:
-            name: ${{ env.ARTIFACT_FILE_NAME }}
-            path: ${{ env.ARTIFACT_BUILD_DIR }}
-
-      - name: log in to dockerhub
-        uses: docker/login-action@v2
-        with:
-          username: ${{ secrets.DOCKERHUB_USERNAME }}
-          password: ${{ secrets.DOCKERHUB_TOKEN }}
-
-      - name: push docker image
-        uses: docker/build-push-action@v4
-        with:
-          context: .
-          push: true
-          tags: ${{ env.CONTAINER_IMAGE_NAME }}
-
-  # notification:
-  #   needs: [trigger-test-infra-provision, conf, build-and-test]
+  # integration-test:
+  #   needs: [build, trigger-test-infra-provision]
   #   runs-on: ubuntu-latest
-  #   if: always()
   #   steps:
-  #     - name: check job status
-  #       env:
-  #         INFRA_STATUS: ${{ needs.trigger-test-infra-provision.result }}
-  #         CONF_STATUS: ${{ needs.conf.result }}
-  #         BUILD_TEST_STATUS: ${{ needs.build-and-test.result }}
-  #         run: |
-  #           echo "Infra Provision status: $INFRA_STATUS"
-  #           echo "Build and Test status: $BUILD_TEST_STATUS"
+  #     - name: setup
+  #       uses: ./.github/workflows/actions/setup
+  #       with:
+  #         pat: ${{ secrets.PAT }}
+  #     - name: do integration test
+  #       run: fake integration test
+
+  # # JOB4-3 E2E Test
+  # e2e-test:
+  #   needs: [build, trigger-test-infra-provision]
+  #   runs-on: ubuntu-latest
+  #   steps:
+  #     - name: setup
+  #       uses: ./.github/workflows/actions/setup
+  #       with:
+  #         pat: ${{ secrets.PAT }}
+
+  #     - name: do e2e test
+  #       run: fake e2e test
+
+  # # JOB5 BUILD CONTAINER IMAGE WITH JAR EXECUTABLE AND ENV
+  # containerization:
+  #   env:
+  #     CONTAINER_IMAGE_NAME: "${{ vars.DOCKERHUB_USERNAME }}/${{ vars.APP_NAME }}:${{ env.VERSION }}"
+
+  #   needs: [unit-test, integration-test, e2e-test]
+  #   runs-on: ubuntu-latest
+
+  #   steps:
+  #     - name: download artifact
+  #         uses: actions/download-artifact@v3
+  #         with:
+  #           name: ${{ env.ARTIFACT_FILE_NAME }}
+  #           path: ${{ env.ARTIFACT_BUILD_DIR }}
+
+  #     - name: log in to dockerhub
+  #       uses: docker/login-action@v2
+  #       with:
+  #         username: ${{ secrets.DOCKERHUB_USERNAME }}
+  #         password: ${{ secrets.DOCKERHUB_TOKEN }}
+
+  #     - name: push docker image
+  #       uses: docker/build-push-action@v4
+  #       with:
+  #         context: .
+  #         push: true
+  #         tags: ${{ env.CONTAINER_IMAGE_NAME }}
+
+  # # notification:
+  # #   needs: [trigger-test-infra-provision, conf, build-and-test]
+  # #   runs-on: ubuntu-latest
+  # #   if: always()
+  # #   steps:
+  # #     - name: check job status
+  # #       env:
+  # #         INFRA_STATUS: ${{ needs.trigger-test-infra-provision.result }}
+  # #         CONF_STATUS: ${{ needs.conf.result }}
+  # #         BUILD_TEST_STATUS: ${{ needs.build-and-test.result }}
+  # #         run: |
+  # #           echo "Infra Provision status: $INFRA_STATUS"
+  # #           echo "Build and Test status: $BUILD_TEST_STATUS"
