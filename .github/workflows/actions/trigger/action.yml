@@ -21,6 +21,8 @@ outputs:
 
 runs:
   using: composite
+  env:
+    GH_TOKEN: ${{ inputs.pat }}
   steps:
     - uses: actions/checkout@v4
     - name: generate token
