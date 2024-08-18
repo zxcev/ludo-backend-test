@@ -20,7 +20,7 @@ jobs:
 
     steps:
       - name: set environment variables
-        run: echo "${{ vars.APP_NAME }}-${{ env.VERSION }}.jar" >> $GITHUB_ENV
+        run: echo "ARTIFACT_FILE_NAME=${{ vars.APP_NAME }}-${{ env.VERSION }}.jar" >> $GITHUB_ENV
       - uses: actions/checkout@v4
 
   # JOB2: TRIGGER TEST INFRASTRUCTURE PROVISIONING
