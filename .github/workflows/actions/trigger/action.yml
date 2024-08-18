@@ -30,6 +30,7 @@ runs:
 
     - name: dispatch event to a specific Github repository
       uses: peter-evans/repository-dispatch@v2
+      shell: bash
       with:
         # secrets.GITHUB_TOKEN doesn't have access permission to other repositories
         # so use pat
