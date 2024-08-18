@@ -19,6 +19,7 @@ runs:
         pat: ${{ inputs.pat }}
 
     - name: build with gradle
+      shell: bash
       run: ./gradlew build -x test -Dspring.profiles.action=${{ inputs.env }} -ParchiveName=${{ inputs.artifact_build_dir }}/${{ inputs.artifact_name }}
 
     - name: upload artifact
