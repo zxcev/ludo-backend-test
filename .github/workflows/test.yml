@@ -8,7 +8,7 @@ jobs:
   job1:
     runs-on: ubuntu-latest
     outputs:
-      env: ${{ steps.step1.outputs.env }}
+      env: ${{ steps.x.outputs.env }}
     steps:
       - name: step1
         id: x
