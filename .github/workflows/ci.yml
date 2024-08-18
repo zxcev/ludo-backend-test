@@ -157,7 +157,7 @@ jobs:
           # so use pat
           token: ${{ secrets.PAT }}
           repository: ${{ github.repository }}
-          event-type: ${{ DESTROY_TEST_INFRA_EVENT_TYPE }}
+          event-type: ${{ DESTROY_TEST_INFRA_EVENT }}
           client-payload: |
             {
               "trigger_repo": "${{ github.repository }}",
