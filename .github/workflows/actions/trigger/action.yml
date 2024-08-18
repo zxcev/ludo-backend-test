@@ -26,7 +26,6 @@ runs:
     - uses: actions/checkout@v4
     - name: generate token
       id: infra
-      shell: bash
       run: echo "token=$(openssl rand -hex 16)" >> $GITHUB_OUTPUT
 
     - name: dispatch event to a specific Github repository
