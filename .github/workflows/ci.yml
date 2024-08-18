@@ -62,9 +62,9 @@ jobs:
     runs-on: ubuntu-latest
     steps:
       - name: setup
-        uses: ${{ env.SETUP_WORKFLOW_PATH }}
+        uses: ./.github/workflows/actions/setup
         with:
-          token: ${{ secrets.PAT }}
+          pat: ${{ secrets.PAT }}
 
     	- name: test with gradle
         env:
@@ -77,9 +77,9 @@ jobs:
     runs-on: ubuntu-latest
     steps:
       - name: setup
-        uses: ${{ env.SETUP_WORKFLOW_PATH }}
+        uses: ./.github/workflows/actions/setup
         with:
-          token: ${{ secrets.PAT }}
+          pat: ${{ secrets.PAT }}
       - name: do integration test
         run: fake integration test   
 
@@ -89,9 +89,9 @@ jobs:
     runs-on: ubuntu-latest
     steps:
       - name: setup
-        uses: ${{ env.SETUP_WORKFLOW_PATH }}
+        uses: ./.github/workflows/actions/setup
         with:
-          token: ${{ secrets.PAT }}
+          pat: ${{ secrets.PAT }}
 
       - name: do e2e test
         run: fake e2e test
