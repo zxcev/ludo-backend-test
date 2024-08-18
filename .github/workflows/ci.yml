@@ -127,7 +127,7 @@ jobs:
       - name: log in to dockerhub
         uses: docker/login-action@v2
         with:
-          username: ${{ secrets.DOCKERHUB_USERNAME }}
+          username: ${{ vars.DOCKERHUB_USERNAME }}
           password: ${{ secrets.DOCKERHUB_TOKEN }}
 
       - name: push docker image
@@ -135,7 +135,7 @@ jobs:
         with:
           context: .
           push: true
-          tags: "${{ secrets.DOCKERHUB_USERNAME }}/${{ needs.cfg.outputs.artifact-with-tag }}"
+          tags: "${{ vars.DOCKERHUB_USERNAME }}/${{ needs.cfg.outputs.artifact-with-tag }}"
 
   # # notification:
   # #   needs: [trigger-test-infra-provision, conf, build-and-test]
