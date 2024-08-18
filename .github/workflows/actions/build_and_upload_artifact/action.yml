@@ -1,0 +1,28 @@
+name: Build Spring Application and upload the artifact
+
+inputs:
+  env:
+    required: true
+  pat:
+    required: true
+  artifact_build_path:
+    required: true
+  artifact_name:
+    required: true
+
+runs:
+  using: composite
+  steps:
+    - name: checkout code and submodules
+      uses: ./.github/workflows/actions/setup
+      with:
+        pat: ${{ inputs.pat }}
+
+    - name: build with gradle
+      run: ./gradlew build -x test -Dspring.profiles.action=${{ inputs.env }} -ParchiveName=${{ inputs.artifact_build_dir }}/${{ inputs.artifact_name }}
+
+    - name: upload artifact
+      uses: actions/upload-artifact@v4
+      with:
+        name: ${{ inputs.artifact_name }}
+        path: ${{ inputs.artifact_build_dir }}

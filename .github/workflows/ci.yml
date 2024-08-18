@@ -21,7 +21,7 @@ jobs:
 
     steps:
       - name: set environment variables
-        run: echo "ARTIFACT_FILE_NAME=${{ vars.APP_NAME }}-${{ env.VERSION }}.jar" >> $GITHUB_ENV
+        run: echo "ARTIFACT_NAME=${{ vars.APP_NAME }}-${{ env.VERSION }}.jar" >> $GITHUB_ENV
 
   # JOB2: TRIGGER TEST INFRASTRUCTURE PROVISIONING
   trigger-test-infra-provision:
@@ -46,16 +46,10 @@ jobs:
       - name: setup
         uses: ./.github/workflows/actions/setup
         with:
+          env: ${{ env.ENV }}
           pat: ${{ secrets.PAT }}
-
-      - name: build with gradle
-        run: ./gradlew build -x test -Dspring.profiles.active=prod -ParchiveName=_build/${{ env.ARTIFACT_FILE_NAME }}
-
-      - name: upload artifact
-        uses: actions/upload-artifact@v4
-        with:
-          name: ${{ env.ARTIFACT_FILE_NAME }}
-          path: ${{ env.ARTIFACT_BUILD_DIR }}
+          artifact_name: ${{ env.ARTIFACT_NAME }}
+          artifact_build_path: ${{ env.ARTIFACT_BUILD_DIR }}
 
   # JOB4-1 Unit Test
   unit-test:
