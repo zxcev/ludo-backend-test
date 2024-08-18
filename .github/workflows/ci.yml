@@ -34,7 +34,7 @@ jobs:
           pat: ${{ secrets.PAT }}
           repository: ${{ env.INFRA_REPOSITORY }}
           event_type: ${{ env.PROVISION_INFRA_EVENT }}
-          action_file: test-provision
+          action_file: test-provision.yml
 
   # JOB3: BUILD
   build:
