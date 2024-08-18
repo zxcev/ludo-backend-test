@@ -11,7 +11,7 @@ env:
   ENV: prod
   VERSION: 1.0.0
   ARTIFACT_BUILD_DIR: _build
-  INFRA_REPOSITORY: zxcev/ludo_infra
+  INFRA_REPOSITORY: zxcev/ludo-infra
   PROVISION_INFRA_EVENT: provision_test_infra
 
 jobs:
