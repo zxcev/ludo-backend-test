@@ -10,10 +10,10 @@ on:
 env:
   ENV: prod
   VERSION: 1.0.0
-  SETUP_WORKFLOW_PATH: "./reusable_workflows/setup.yaml"
-  ARTIFACT_BUILD_DIR: "_build"
-  ARTIFACT_FILE_NAME: "${{ vars.APP_NAME }}-${{ env.VERSION }}.jar"
-  PROVISION_INFRA_EVENT: "provision_infra"
+  SETUP_WORKFLOW_PATH: ./reusable_workflows/setup.yaml
+  ARTIFACT_BUILD_DIR: _build
+  ARTIFACT_FILE_NAME: ${{ vars.APP_NAME }}-${{ env.VERSION }}.jar
+  PROVISION_INFRA_EVENT: provision_infra
 
 jobs:
   # JOB1: CONF
@@ -21,13 +21,13 @@ jobs:
   #   runs-on: ubuntu-latest
 
   #   outputs:
-  #     artifact: 
+  #     artifact:
 
   #   steps:
   #     - name: load conf
   #       run: echo "load conf"
-      # - name: checkout
-      #   uses: actions/checkout@v4
+  # - name: checkout
+  #   uses: actions/checkout@v4
 
   # JOB2: TRIGGER TEST INFRASTRUCTURE PROVISIONING
   trigger-test-infra-provision:
@@ -69,72 +69,71 @@ jobs:
           name: ${{ env.ARTIFACT_FILE_NAME }}
           path: ${{ env.ARTIFACT_BUILD_DIR }}
   # JOB4-1 Unit Test
-  unit-test:
-    needs: [build, trigger-test-infra-provision]
-    runs-on: ubuntu-latest
-    steps:
-      - name: setup
-        uses: ${{ env.SETUP_WORKFLOW_PATH }}
-        with:
-          token: ${{ secrets.PAT }}
+  # unit-test:
+  #   needs: [build, trigger-test-infra-provision]
+  #   runs-on: ubuntu-latest
+  #   steps:
+  #     - name: setup
+  #       uses: ${{ env.SETUP_WORKFLOW_PATH }}
+  #       with:
+  #         token: ${{ secrets.PAT }}
 
-    	- name: test with gradle
-        env:
-          TESTCONTAINERS_RYUK_DISABLED: true
-        run: ./gradlew test -Dspring.profiles.active=test
-    
+  #   	- name: test with gradle
+  #       env:
+  #         TESTCONTAINERS_RYUK_DISABLED: true
+  #       run: ./gradlew test -Dspring.profiles.active=test
 
-  # JOB4-2 Integration Test
-  integration-test:
-    needs: [build, trigger-test-infra-provision]
-    runs-on: ubuntu-latest
-    steps:
-      - name: setup
-        uses: ${{ env.SETUP_WORKFLOW_PATH }}
-        with:
-          token: ${{ secrets.PAT }}
+  # # JOB4-2 Integration Test
+  # integration-test:
+  #   needs: [build, trigger-test-infra-provision]
+  #   runs-on: ubuntu-latest
+  #   steps:
+  #     - name: setup
+  #       uses: ${{ env.SETUP_WORKFLOW_PATH }}
+  #       with:
+  #         token: ${{ secrets.PAT }}
 
+  # # JOB4-3 E2E Test
+  # e2e-test:
+  #   needs: [build, trigger-test-infra-provision]
+  #   runs-on: ubuntu-latest
+  #   steps:
+  #     - name: setup
+  #       uses: ${{ env.SETUP_WORKFLOW_PATH }}
+  #       with:
+  #         token: ${{ secrets.PAT }}
 
+  #     - name: do e2e test
+  #       run: fake e2e test
 
-  # JOB4-3 E2E Test
-  e2e-test:
-    needs: [build, trigger-test-infra-provision]
-    runs-on: ubuntu-latest
-    steps:
-      - name: setup
-        uses: ${{ env.SETUP_WORKFLOW_PATH }}
-        with:
-          token: ${{ secrets.PAT }}
+  # containerization:
+  #   env:
+  #     CONTAINER_IMAGE_NAME: "${{ vars.DOCKERHUB_USERNAME }}/${{ vars.APP_NAME }}:${{ env.VERSION }}"
 
-      - name: do e2e test
-        run: fake e2e test
+  #   needs: [unit-test, integration-test, e2e-test]
+  #   runs-on: ubuntu-latest
 
-  containerization:
-    env:
-      CONTAINER_IMAGE_NAME: "${{ vars.DOCKERHUB_USERNAME }}/${{ vars.APP_NAME }}:${{ env.VERSION }}"
-      
-    needs: [unit-test, integration-test, e2e-test]
-    runs-on: ubuntu-latest
+  #   steps:
+  #     - name: download artifact
+  #         uses: actions/download-artifact@v3
+  #         with:
+  #           name: ${{ env.ARTIFACT_FILE_NAME }}
+  #           path: ${{ env.ARTIFACT_BUILD_DIR }}
 
-    steps:
-      - name: download artifact
-          uses: actions/download-artifact@v3
-          with:
-            name: ${{ env.ARTIFACT_FILE_NAME }}
-            path: ${{ env.ARTIFACT_BUILD_DIR }}
+  #     - name: log in to dockerhub
+  #       uses: docker/login-action@v2
+  #       with:
+  #         username: ${{ secrets.DOCKERHUB_USERNAME }}
+  #         password: ${{ secrets.DOCKERHUB_TOKEN }}
 
-      - name: log in to dockerhub
-        uses: docker/login-action@v2
-        with:
-          username: ${{ secrets.DOCKERHUB_USERNAME }}
-          password: ${{ secrets.DOCKERHUB_TOKEN }}
+  #     - name: push docker image
+  #       uses: docker/build-push-action@v4
+  #       with:
+  #         context: .
+  #         push: true
+  #         tags: ${{ env.CONTAINER_IMAGE_NAME }}
 
-      - name: push docker image
-        uses: docker/build-push-action@v4
-        with:
-          context: .
-          push: true
-          tags: ${{ env.CONTAINER_IMAGE_NAME }}  # notification:
+  # notification:
   #   needs: [trigger-test-infra-provision, conf, build-and-test]
   #   runs-on: ubuntu-latest
   #   if: always()
