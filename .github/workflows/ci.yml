@@ -27,7 +27,7 @@ jobs:
   trigger-test-infra-provision:
     runs-on: ubuntu-latest
     steps:
-      - name:
+      - name: trigger provisioning infrastructure for tests
         uses: ./.github/workflows/actions/trigger
         with:
           pat: ${{ secrets.PAT }}
