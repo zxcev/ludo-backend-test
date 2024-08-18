@@ -5,13 +5,13 @@ inputs:
     required: true
 runs:
   using: composite
-  setup:
+  setup_env:
     runs-on: ubuntu-latest
     steps:
       - name: checkout code and submodules
         uses: actions/checkout@v4
         with:
-          token: ${{ secrets.token }}
+          token: ${{ inputs.token }}
           submodules: "recursive"
 
       - name: setup java 17
