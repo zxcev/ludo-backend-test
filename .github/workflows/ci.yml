@@ -46,7 +46,7 @@ jobs:
       - name: setup
         uses: ./.github/workflows/actions/setup
         with:
-          token: ${{ secrets.PAT }}
+          pat: ${{ secrets.PAT }}
 
       - name: build with gradle
         run: ./gradlew build -x test -Dspring.profiles.active=prod -ParchiveName=_build/${{ env.ARTIFACT_FILE_NAME }}
