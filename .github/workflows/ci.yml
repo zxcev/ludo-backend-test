@@ -53,7 +53,7 @@ jobs:
           env: ${{ env.ENV }}
           pat: ${{ secrets.PAT }}
           artifact_name: ${{ env.ARTIFACT_NAME }}
-          artifact_build_path: ${{ env.ARTIFACT_BUILD_DIR }}
+          artifact_build_dir: ${{ env.ARTIFACT_BUILD_DIR }}
 
   # JOB4-1 Unit Test
   unit-test:
