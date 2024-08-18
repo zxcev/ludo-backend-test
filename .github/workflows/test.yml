@@ -13,6 +13,7 @@ jobs:
       - name: step2
         run: echo ${{ env.ENV }}
   job2:
+    needs: job1
     runs-on: ubuntu-latest
     steps:
       - name: step2-1
