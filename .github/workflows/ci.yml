@@ -44,7 +44,7 @@ jobs:
         # ludo:240101-510f224-dev
 
   # JOB2: TRIGGER TEST INFRASTRUCTURE PROVISIONING
-  trigger-test-infra-provision:
+  trigger-provision-test-infra:
     runs-on: ubuntu-latest
     steps:
       - uses: actions/checkout@v4
@@ -140,7 +140,7 @@ jobs:
           push: true
           tags: "${{ vars.DOCKERHUB_USERNAME }}/${{ needs.cfg.outputs.artifact-with-tag }}"
 
-  test-infra-destroy:
+  trigger-destroy-test-infra:
     needs: [unit-test, integration-test, e2e-test]
     runs-on: ubuntu-latest
     steps:
@@ -165,22 +165,6 @@ jobs:
               "verification_token": "${{ steps.infra.outputs.token }}"
             }
 
-  trigger-infra-provision:
-    runs-on: ubuntu-latest
-    steps:
-      - uses: actions/checkout@v4
-      - name: trigger provisioning infrastructure for prod or stag server
-        uses: peter-evans/repository-dispatch@v2
-        with:
-          token: ${{ secrets.PAT }}
-          repository: ${{ env.INFRA_REPOSITORY }}
-          event-type: ${{ env.DESTROY_TEST_INFRA_EVENT }}
-          client-payload: |
-          {
-            "trigger_repo": "${{ github.repository }}",
-            "trigger_sha": "${{ github.sha }}",
-            "verification_token": "${{ steps.infra.outputs.token }}"          
-          }
   # # notification:
   # #   needs: [trigger-test-infra-provision, conf, build-and-test]
   # #   runs-on: ubuntu-latest
