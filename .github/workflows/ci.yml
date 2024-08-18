@@ -35,7 +35,7 @@ jobs:
         run: |
           DATE=$(date +%y%2%d)
           COMMIT_HASH=${GITHUB_SHA::7}
-          echo "artifact-with-tag=${{ env.APP_NAME }}-${{ DATE }}-${{ COMMIT_HASH }}-${{ env.ENV }}" >> $GITHUB_OUTPUT
+          echo "artifact-with-tag=${{ env.APP_NAME }}:${{ DATE }}-${{ COMMIT_HASH }}-${{ env.ENV }}" >> $GITHUB_OUTPUT
         # <app>-<env>-<date>-<hash>
         # ludo:240101-510f224-dev
 
@@ -113,9 +113,6 @@ jobs:
 
   # # JOB5 BUILD CONTAINER IMAGE WITH JAR EXECUTABLE AND ENV
   containerization:
-    env:
-      CONTAINER_IMAGE_NAME: "${{ vars.DOCKERHUB_USERNAME }}/${{ needs.cfg.outputs.artifact_with_tag }}"
-
     needs: [unit-test, integration-test, e2e-test]
     runs-on: ubuntu-latest
 
@@ -137,7 +134,7 @@ jobs:
         with:
           context: .
           push: true
-          tags: ${{ needs.cfg.outputs.artifact_with_tag }}
+          tags: "${{ secrets.DOCKERHUB_USERNAME }}/${{ needs.cfg.outputs.artifact_with_tag }}"
 
   # # notification:
   # #   needs: [trigger-test-infra-provision, conf, build-and-test]
