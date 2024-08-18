@@ -134,13 +134,17 @@ jobs:
         with:
           username: ${{ vars.DOCKERHUB_USERNAME }}
           password: ${{ secrets.DOCKERHUB_TOKEN }}
+      - name: set docker image name with tag
+        run: |
+          echo "ARTIFACT_WITH_TAG=${{ vars.DOCKERHUB_USERNAME }}/${{ needs.cfg.outputs.artifact-with-tag }}" >> $GITHUB_ENV
+          echo "docker image name:tag will be `$ARTIFACT_WITH_TAG`"
 
       - name: push docker image
         uses: docker/build-push-action@v4
         with:
           context: .
           push: true
-          tags: "${{ vars.DOCKERHUB_USERNAME }}/${{ needs.cfg.outputs.artifact-with-tag }}"
+          tags: ${{ env.ARTIFACT_WITH_TAG }}
 
   trigger-destroy-test-infra:
     needs: [unit-test, integration-test, e2e-test]
