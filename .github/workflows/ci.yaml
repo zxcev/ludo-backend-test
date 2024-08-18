@@ -17,15 +17,15 @@ env:
 
 jobs:
   # JOB1: CONF
-  conf:
-    runs-on: ubuntu-latest
+  # conf:
+  #   runs-on: ubuntu-latest
 
-    outputs:
-      artifact: 
+  #   outputs:
+  #     artifact: 
 
-    steps:
-      - name: load conf
-        run: echo "load conf"
+  #   steps:
+  #     - name: load conf
+  #       run: echo "load conf"
       # - name: checkout
       #   uses: actions/checkout@v4
 
@@ -61,7 +61,7 @@ jobs:
           token: ${{ secrets.PAT }}
 
       - name: build with gradle
-        run: ./gradlew build -x test -Dspring.profiles.active=prod -ParchiveName=_build/${{ needs.conf.outputs.artifact }}
+        run: ./gradlew build -x test -Dspring.profiles.active=prod -ParchiveName=_build/${{ env.ARTIFACT_FILE_NAME }}
 
       - name: upload artifact
         uses: actions/upload-artifact@v4
