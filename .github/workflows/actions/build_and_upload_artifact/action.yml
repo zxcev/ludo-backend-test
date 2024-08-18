@@ -5,7 +5,7 @@ inputs:
     required: true
   pat:
     required: true
-  artifact_build_path:
+  artifact_build_dir:
     required: true
   artifact_name:
     required: true
