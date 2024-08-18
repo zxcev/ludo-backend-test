@@ -7,7 +7,7 @@ jobs:
   job1:
     runs-on: ubuntu-latest
     outputs:
-      env2: ${{ steps.step1.outputs.env }}
+      env: ${{ steps.step1.outputs.env }}
     steps:
       - name: step1
         id: job1
@@ -17,7 +17,7 @@ jobs:
       - name: step2
         run: |
           echo "job1.step1 env: ${{ env.ENV }}"
-          echo "job1.step1 env: ${{ needs.job1.outputs.env }}"
+          echo "job1.step1 env: ${{ steps.step1.outputs.env }}"
   job2:
     needs: job1
     runs-on: ubuntu-latest
