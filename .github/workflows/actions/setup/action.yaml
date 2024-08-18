@@ -1,10 +1,10 @@
 name: setup java & gradle with cache
-on:
-  workflow_call:
-    secrets:
-      token:
-        required: true
-jobs:
+description: Set up Java and Gradle and then do caching
+inputs:
+  token:
+    required: true
+runs:
+  using: composite
   setup:
     runs-on: ubuntu-latest
     steps:
