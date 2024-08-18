@@ -1,10 +1,6 @@
 name: trigger workflow to Github Repository
 description: Send a workflow trigger event to another GitHub repository
 
-defaults:
-  run:
-    shell: bash
-
 inputs:
   pat:
     required: true
@@ -50,6 +46,7 @@ runs:
     - name: fetch RUN_ID
       env:
         GH_TOKEN: ${{ inputs.pat }}
+      shell: bash
       run: |
         RUN_ID=$(gh run list -R ${{ inputs.repository }} -w ${{ inputs.action_file }} -L 1 --json databaseId -q '.[0].databaseId')
         echo "Triggered workflow RUN_ID: $RUN_ID"
@@ -58,6 +55,7 @@ runs:
     - name: wait for completion
       env:
         GH_TOKEN: ${{ inputs.pat }}
+      shell: bash
       run: |
         START_TIME=$(date +%s)
         TIMEOUT=3600
@@ -78,6 +76,7 @@ runs:
 
     - name: evaluate conclusion
       id: conclusion
+      shell: bash
       env:
         GH_TOKEN: ${{ inputs.pat }}
       run: |

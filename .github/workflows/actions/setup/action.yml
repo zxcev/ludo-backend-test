@@ -1,10 +1,6 @@
 name: setup java & gradle with cache
 description: Set up Java and Gradle and then do caching
 
-defaults:
-  run:
-    shell: bash
-
 inputs:
   pat:
     required: true
