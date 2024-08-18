@@ -1,6 +1,10 @@
 name: trigger workflow to Github Repository
 description: Send a workflow trigger event to another GitHub repository
 
+defaults:
+  run:
+    shell: bash
+
 inputs:
   pat:
     required: true

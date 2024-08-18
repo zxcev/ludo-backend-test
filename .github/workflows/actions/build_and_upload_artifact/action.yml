@@ -1,5 +1,9 @@
 name: Build Spring Application and upload the artifact
 
+defaults:
+  run:
+    shell: bash
+
 inputs:
   env:
     required: true
