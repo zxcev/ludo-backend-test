@@ -1,0 +1,63 @@
+name: CI pipeline on PR - build and test an application
+
+on:
+  pull_request:
+    types: [opened, synchronize]
+
+jobs:
+  trigger-e2e-provision:
+    runs-on: ubuntu-latest
+    steps:
+      - name: trigger e2e infrastructure provisioning
+        uses: peter-evans/repository-dispatch@v2
+        with:
+          token: ${{ secrets.GITHUB_TOKEN }}
+          repository: zxcev/ludo_infra
+          event-type: provision-infra
+          client-payload: '{"ref": "${{ github.sha }}"}'
+
+  conf:
+    runs-on: ubuntu-latest
+
+    outputs:
+      artifact: ${{ vars.APP_NAME }}-${{ env.VERSION }}.jar
+      image_tag: ${{ vars.DOCKERHUB_USERNAME }}/${{ vars.APP_NAME }}:${{ env.VERSION }}
+
+    steps:
+      - name: load conf
+        run: echo "load conf"
+        
+  build:
+    - name: checkout code and submodules
+    uses: actions/checkout@v4
+    with:
+      token: ${{ secrets.PAT }}
+      submodules: "recursive"
+
+  - name: setup Java
+    uses: actions/setup-java@v4
+    with:
+      java-version: "17"
+      distribution: "temurin"
+
+  - name: cache gradle packages
+    uses: actions/cache@v3
+    with:
+      path: |
+        ~/.gradle/caches
+        ~/.gradle/wrapper
+      key: ${{ runner.os }}-gradle-${{hashFiles('**/*.gradle*', '**/gradle-wrapper.properties') }}
+      restore-keys: |
+        ${{ runner.os }}-gradle-
+
+  - name: setup gradle
+    uses: gradle/actions/setup-gradle@v4
+
+  - name: build with gradle
+    run: ./gradlew build -x test -Dspring.profiles.active=prod -ParchiveName=build/libs/${{ needs.conf.outputs.artifact }}
+
+  - name: test with gradle
+    env:
+      TESTCONTAINERS_RYUK_DISABLED: true
+    run: ./gradlew test -Dspring.profiles.active=test
+
