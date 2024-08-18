@@ -50,7 +50,7 @@ jobs:
 
     steps:
       - name: setup
-        uses: ".github/workflows/reusable_workflows/setup.yaml"
+        uses: /.github/workflows/reusable_workflows/setup.yaml
         with:
           token: ${{ secrets.PAT }}
 
