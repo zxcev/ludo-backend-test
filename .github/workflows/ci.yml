@@ -99,32 +99,32 @@ jobs:
         run: fake e2e test
 
   # # JOB5 BUILD CONTAINER IMAGE WITH JAR EXECUTABLE AND ENV
-  containerization:
-    env:
-      CONTAINER_IMAGE_NAME: "${{ vars.DOCKERHUB_USERNAME }}/${{ vars.APP_NAME }}:${{ env.VERSION }}"
+  # containerization:
+  #   env:
+  #     CONTAINER_IMAGE_NAME: "${{ vars.DOCKERHUB_USERNAME }}/${{ vars.APP_NAME }}:${{ env.VERSION }}"
 
-    needs: [unit-test, integration-test, e2e-test]
-    runs-on: ubuntu-latest
+  #   needs: [unit-test, integration-test, e2e-test]
+  #   runs-on: ubuntu-latest
 
-    steps:
-      - name: download artifact
-          uses: actions/download-artifact@v3
-          with:
-            name: ${{ env.ARTIFACT_FILE_NAME }}
-            path: ${{ env.ARTIFACT_BUILD_DIR }}
+  #   steps:
+  #     - name: download artifact
+  #         uses: actions/download-artifact@v3
+  #         with:
+  #           name: ${{ env.ARTIFACT_FILE_NAME }}
+  #           path: ${{ env.ARTIFACT_BUILD_DIR }}
 
-      - name: log in to dockerhub
-        uses: docker/login-action@v2
-        with:
-          username: ${{ secrets.DOCKERHUB_USERNAME }}
-          password: ${{ secrets.DOCKERHUB_TOKEN }}
+  #     - name: log in to dockerhub
+  #       uses: docker/login-action@v2
+  #       with:
+  #         username: ${{ secrets.DOCKERHUB_USERNAME }}
+  #         password: ${{ secrets.DOCKERHUB_TOKEN }}
 
-      - name: push docker image
-        uses: docker/build-push-action@v4
-        with:
-          context: .
-          push: true
-          tags: ${{ env.CONTAINER_IMAGE_NAME }}
+  #     - name: push docker image
+  #       uses: docker/build-push-action@v4
+  #       with:
+  #         context: .
+  #         push: true
+  #         tags: ${{ env.CONTAINER_IMAGE_NAME }}
 
   # # notification:
   # #   needs: [trigger-test-infra-provision, conf, build-and-test]
