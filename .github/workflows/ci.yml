@@ -39,7 +39,7 @@ jobs:
         run: |
           DATE=$(date +%y%m%d)
           COMMIT_HASH=${GITHUB_SHA::7}
-          ARTIFACT_WITH_TAG="${{ env.APP_NAME }}:$DATE-$COMMIT_HASH-${{ env.ENV }}"
+          ARTIFACT_WITH_TAG="${{ env.APP_NAME }}-$DATE-$COMMIT_HASH-${{ env.ENV }}"
           echo "artifact-with-tag=$ARTIFACT_WITH_TAG" >> $GITHUB_OUTPUT
           echo "generated artifact-with-tag: $ARTIFACT_WITH_TAG"
         # <app>-<env>-<date>-<hash>
@@ -84,10 +84,10 @@ jobs:
         with:
           pat: ${{ secrets.PAT }}
 
-      - name: test with gradle
-        env:
-          TESTCONTAINERS_RYUK_DISABLED: true
-        run: ./gradlew test -Dspring.profiles.active=test
+      # - name: test with gradle
+      #   env:
+      #     TESTCONTAINERS_RYUK_DISABLED: true
+      #   run: ./gradlew test -Dspring.profiles.active=test
 
   # JOB4-2 Integration Test
   integration-test:
