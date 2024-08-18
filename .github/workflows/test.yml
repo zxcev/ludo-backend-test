@@ -19,7 +19,7 @@ jobs:
       - name: step2
         run: |
           echo "job1.step1 env: ${{ env.ENV }}"
-          echo "job1.step1 env: ${{ steps.step1.outputs.env }}"
+          echo "job1.step1 env: ${{ steps.x.outputs.env }}"
   job2:
     needs: job1
     runs-on: ubuntu-latest
