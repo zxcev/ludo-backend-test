@@ -5,9 +5,9 @@ inputs:
     required: true
   pat:
     required: true
-  artifact-path:
+  artifact-build-path:
     required: true
-  artifact-with-tag:
+  artifact-name:
     required: true
 
 runs:
@@ -20,10 +20,12 @@ runs:
 
     - name: build with gradle
       shell: bash
-      run: ./gradlew build -x test -Dspring.profiles.action=${{ inputs.env }} -ParchiveName=${{ inputs.artifact-path }}/${{ inputs.artifact-with-tag }}.jar
+      run: |
+        ARTIFACT_FULL_PATH="${{ inputs.artifact-build-path }}/${{ inputs.artifact-name }}.jar"
+        ./gradlew build -x test -Dspring.profiles.action=${{ inputs.env }} -ParchiveName=$ARTIFACT_FULL_PATH
 
     - name: upload artifact
       uses: actions/upload-artifact@v4
       with:
-        name: "${{ inputs.artifact-with-tag }}.jar"
-        path: ${{ inputs.artifact-path }}
+        name: "${{ inputs.artifact-name }}.jar"
+        path: ${{ inputs.artifact-build-path }}

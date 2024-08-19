@@ -17,7 +17,7 @@ env:
   ENV: ${{ github.ref == 'refs/heads/main' && 'prod' || 'stag' }}
   VERSION: 1.0.0
   APP_NAME: ludo
-  ARTIFACT_PATH: build/libs
+  ARTIFACT_BUILD_PATH: build/libs
   INFRA_REPOSITORY: zxcev/ludo-infra
   PROVISION_TEST_INFRA_EVENT: provision-test-infra
   DESTROY_TEST_INFRA_EVENT: destroy-test-infra
@@ -29,7 +29,7 @@ jobs:
     runs-on: ubuntu-latest
     outputs:
       artifact-with-tag: ${{ steps.cfg.outputs.artifact-with-tag }}
-      artifact-path: ${{ steps.cfg.outputs.artifact-path }}
+      artifact-name: ${{ steps.cfg.outputs.artifact-name }}
       # artifact-with-tag: ludoapp
     steps:
       - name:
@@ -41,12 +41,9 @@ jobs:
         run: |
           DATE=$(date +%y%m%d)
           COMMIT_HASH=${GITHUB_SHA::7}
-          ARTIFACT_WITH_TAG="${{ env.APP_NAME }}-$DATE-$COMMIT_HASH-${{ env.ENV }}"
-          ARTIFACT_PATH="${{ env.ARTIFACT_PATH }}/$ARTIFACT_WITH_TAG"
-          echo "artifact-with-tag=$ARTIFACT_WITH_TAG" >> $GITHUB_OUTPUT
-          echo "artifact-path=$ARTIFACT_PATH" >> $GITHUB_OUTPUT
-          echo "generated artifact-with-tag: $ARTIFACT_WITH_TAG"
-          echo "generated artifact-path: $ARTIFACT_PATH"
+          ARTIFACT_NAME="${{ env.APP_NAME }}-$DATE-$COMMIT_HASH-${{ env.ENV }}"
+          echo "artifact-name=$ARTIFACT_NAME" >> $GITHUB_OUTPUT
+          echo "generated artifact-name: $ARTIFACT_NAME"
         # <app>-<env>-<date>-<hash>
         # ludo:240101-510f224-dev
 
@@ -75,8 +72,8 @@ jobs:
         with:
           env: ${{ env.ENV }}
           pat: ${{ secrets.PAT }}
-          artifact-with-tag: ${{ needs.cfg.outputs.artifact-with-tag }}
-          artifact-path: ${{ needs.cfg.outputs.artifact-path }}
+          artifact-name: ${{ needs.cfg.outputs.artifact-name }}
+          artifact-build-path: ${{ env.ARTIFACT_BUILD_PATH }}
 
   # JOB4-1 Unit Test
   unit-test:
@@ -132,8 +129,8 @@ jobs:
       - name: download artifact
         uses: actions/download-artifact@v4
         with:
-          name: "${{ needs.cfg.outputs.artifact-with-tag }}.jar"
-          path: ${{ needs.cfg.outputs.artifact-path }}
+          name: "${{ needs.cfg.outputs.artifact-name }}.jar"
+          path: ${{ env.ARTIFACT_BUILD_PATH }}
 
       - name: log in to dockerhub
         uses: docker/login-action@v2
