@@ -23,7 +23,7 @@ runs:
       run: ./gradlew build -x test -Dspring.profiles.action=${{ inputs.env }} -ParchiveName=${{ inputs.artifact-build-dir }}/${{ inputs.artifact-with-tag }}.jar
 
     - name: upload artifact
-      uses: actions/upload-artifact@v4
+      uses: actions/upload-artifact@v3
       with:
         name: "${{ inputs.artifact-with-tag }}.jar"
         path: ${{ inputs.artifact-build-dir }}
