@@ -4,7 +4,7 @@ on:
       - main
 env:
   ENV: ${{ github.ref == 'refs/heads/main' && 'prod' || 'dev' }}
-  FILENAME: a-1
+  FILENAME: a:1
 jobs:
   job1:
     runs-on: ubuntu-latest
