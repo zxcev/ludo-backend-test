@@ -29,6 +29,7 @@ jobs:
     runs-on: ubuntu-latest
     outputs:
       artifact-with-tag: ${{ steps.cfg.outputs.artifact-with-tag }}
+      artifact-path: ${{ steps.cfg.outputs.artifact-path }}
       # artifact-with-tag: ludoapp
     steps:
       - name:
