@@ -42,7 +42,7 @@ jobs:
           DATE=$(date +%y%m%d)
           COMMIT_HASH=${GITHUB_SHA::7}
           ARTIFACT_WITH_TAG="${{ env.APP_NAME }}-$DATE-$COMMIT_HASH-${{ env.ENV }}"
-          ARTIFACT_PATH="${{ ARTIFACT_BUILD_DIR }}/$ARTIFACT_WITH_TAG"
+          ARTIFACT_PATH="${{ ARTIFACT_PATH }}/$ARTIFACT_WITH_TAG"
           echo "artifact-with-tag=$ARTIFACT_WITH_TAG" >> $GITHUB_OUTPUT
           echo "artifact-path=$ARTIFACT_PATH" >> $GITHUB_OUTPUT
           echo "generated artifact-with-tag: $ARTIFACT_WITH_TAG"
