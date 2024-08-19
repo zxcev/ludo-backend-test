@@ -141,7 +141,7 @@ jobs:
       - name: set docker image name with tag
         run: |
           ARTIFACT_WITH_TAG=$(echo ${{ needs.cfg.outputs.artifact-name }} | sed 's/-/:/' )
-          ARTIFACT_WITH_TAG="echo ${ARTIFACT_WITH_TAG%.*}"
+          ARTIFACT_WITH_TAG=${ARTIFACT_WITH_TAG%.*}
           echo "CONTAINER_IMAGE_PATH=${{ vars.DOCKERHUB_USERNAME }}/$ARTIFACT_WITH_TAG" >> $GITHUB_ENV
           echo "docker image name:tag will be `$CONTAINER_IMAGE_PATH`"
 
