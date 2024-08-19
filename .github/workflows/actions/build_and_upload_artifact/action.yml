@@ -5,7 +5,7 @@ inputs:
     required: true
   pat:
     required: true
-  artifact-build-dir:
+  artifact-path:
     required: true
   artifact-with-tag:
     required: true
@@ -26,4 +26,4 @@ runs:
       uses: actions/upload-artifact@v3
       with:
         name: "${{ inputs.artifact-with-tag }}.jar"
-        path: ${{ inputs.artifact-build-dir }}
+        path: ${{ inputs.artifact-path }}
