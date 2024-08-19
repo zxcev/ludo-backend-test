@@ -127,30 +127,39 @@ jobs:
 
     steps:
       - uses: actions/checkout@v4
-      - name: download artifact
-        uses: actions/download-artifact@v4
+      - name: containerization
+        uses: ./.github/workflows/actions/containerization
         with:
-          name: "${{ needs.cfg.outputs.artifact-name }}"
-          path: ${{ env.ARTIFACT_BUILD_PATH }}
+          env: ${{ env.ENV }}
+          dockerhub-username: ${{ vars.DOCKERHUB_USERNAME }}
+          dockerhub-token: ${{ secrets.DOCKERHUB_TOKEN }}
+          artifact-name: ${{ needs.cfg.outputs.artifact-name }}
+          artifact-build-path: ${{ env.ARTIFACT_BUILD_PATH }}
 
-      - name: log in to dockerhub
-        uses: docker/login-action@v2
-        with:
-          username: ${{ vars.DOCKERHUB_USERNAME }}
-          password: ${{ secrets.DOCKERHUB_TOKEN }}
-      - name: set docker image name with tag
-        run: |
-          ARTIFACT_WITH_TAG=$(echo ${{ needs.cfg.outputs.artifact-name }} | sed 's/-/:/' )
-          ARTIFACT_WITH_TAG=${ARTIFACT_WITH_TAG%.*}
-          echo "CONTAINER_IMAGE_PATH=${{ vars.DOCKERHUB_USERNAME }}/$ARTIFACT_WITH_TAG" >> $GITHUB_ENV
-          echo "docker image name:tag will be `$CONTAINER_IMAGE_PATH`"
+      # - name: download artifact
+      #   uses: actions/download-artifact@v4
+      #   with:
+      #     name: "${{ needs.cfg.outputs.artifact-name }}"
+      #     path: ${{ env.ARTIFACT_BUILD_PATH }}
 
-      - name: push docker container image
-        uses: docker/build-push-action@v4
-        with:
-          context: .
-          push: true
-          tags: ${{ env.CONTAINER_IMAGE_PATH }}
+      # - name: log in to dockerhub
+      #   uses: docker/login-action@v2
+      #   with:
+      #     username: ${{ vars.DOCKERHUB_USERNAME }}
+      #     password: ${{ secrets.DOCKERHUB_TOKEN }}
+      # - name: set docker image name with tag
+      #   run: |
+      #     ARTIFACT_WITH_TAG=$(echo ${{ needs.cfg.outputs.artifact-name }} | sed 's/-/:/' )
+      #     ARTIFACT_WITH_TAG=${ARTIFACT_WITH_TAG%.*}
+      #     echo "CONTAINER_IMAGE_PATH=${{ vars.DOCKERHUB_USERNAME }}/$ARTIFACT_WITH_TAG" >> $GITHUB_ENV
+      #     echo "docker image name:tag will be `$CONTAINER_IMAGE_PATH`"
+
+      # - name: push docker container image
+      #   uses: docker/build-push-action@v4
+      #   with:
+      #     context: .
+      #     push: true
+      #     tags: ${{ env.CONTAINER_IMAGE_PATH }}
 
   trigger-destroy-test-infra:
     needs: [cfg, unit-test, integration-test, e2e-test]
