@@ -26,4 +26,4 @@ runs:
       uses: actions/upload-artifact@v4
       with:
         name: "${{ inputs.artifact-with-tag }}.jar"
-        path: ${{ inputs.artifact-build-dir }}
+        path: "${{ inputs.artifact-build-dir }}/${{ inputs.artifact-with-tag }}"
