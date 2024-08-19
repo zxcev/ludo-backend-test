@@ -41,7 +41,7 @@ jobs:
         run: |
           DATE=$(date +%y%m%d)
           COMMIT_HASH=${GITHUB_SHA::7}
-          ARTIFACT_NAME="${{ env.APP_NAME }}-$DATE-$COMMIT_HASH-${{ env.ENV }}"
+          ARTIFACT_NAME="${{ env.APP_NAME }}-$DATE-$COMMIT_HASH-${{ env.ENV }}.jar"
           echo "artifact-name=$ARTIFACT_NAME" >> $GITHUB_OUTPUT
           echo "generated artifact-name: $ARTIFACT_NAME"
         # <app>-<env>-<date>-<hash>
@@ -126,10 +126,11 @@ jobs:
     runs-on: ubuntu-latest
 
     steps:
+      - uses: actions/checkout@v4
       - name: download artifact
         uses: actions/download-artifact@v4
         with:
-          name: "${{ needs.cfg.outputs.artifact-name }}.jar"
+          name: "${{ needs.cfg.outputs.artifact-name }}"
           path: ${{ env.ARTIFACT_BUILD_PATH }}
 
       - name: log in to dockerhub
@@ -140,6 +141,7 @@ jobs:
       - name: set docker image name with tag
         run: |
           ARTIFACT_WITH_TAG=$(echo ${{ needs.cfg.outputs.artifact-name }} | sed 's/-/:/' )
+          ARTIFACT_WITH_TAG="echo ${ARTIFACT_WITH_TAG%.*}"
           echo "CONTAINER_IMAGE_PATH=${{ vars.DOCKERHUB_USERNAME }}/$ARTIFACT_WITH_TAG" >> $GITHUB_ENV
           echo "docker image name:tag will be `$CONTAINER_IMAGE_PATH`"
 
