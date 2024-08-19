@@ -28,7 +28,8 @@ jobs:
   cfg:
     runs-on: ubuntu-latest
     outputs:
-      artifact-with-tag: ${{ steps.cfg.outputs.artifact-with-tag }}
+      # artifact-with-tag: ${{ steps.cfg.outputs.artifact-with-tag }}
+      artifact-with-tag: ludo:1
     steps:
       - name:
           set environment variables
