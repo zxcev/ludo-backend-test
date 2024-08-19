@@ -40,6 +40,7 @@ jobs:
           name: txt
           path: .
   download:
+    needs: upload
     runs-on: ubuntu-latest
     steps:
       - uses: actions/download-artifact@v4
