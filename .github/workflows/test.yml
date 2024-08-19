@@ -29,3 +29,20 @@ jobs:
         run: |
           echo ${{ env.ENV }}
           echo "job1.step1 env: ${{ needs.job1.outputs.env }}"
+  upload:
+    runs-on: ubuntu-latest
+    steps:
+      - name: create file
+        run: |
+          echo "file1" > txt
+      - uses: actions/upload-artifact@v4
+        with:
+          name: txt
+          path: .
+  download:
+    runs-on: ubuntu-latest
+    steps:
+      - uses: actions/download-artifact@v4
+        with:
+          name: txt
+          path: .
