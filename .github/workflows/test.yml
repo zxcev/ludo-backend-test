@@ -4,6 +4,7 @@ on:
       - main
 env:
   ENV: ${{ github.ref == 'refs/heads/main' && 'prod' || 'dev' }}
+  FILENAME: a-1
 jobs:
   job1:
     runs-on: ubuntu-latest
@@ -37,7 +38,7 @@ jobs:
           echo "file1" > txt
       - uses: actions/upload-artifact@v4
         with:
-          name: txt
+          name: ${{ env.FILENAME }}
           path: .
   download:
     needs: upload
@@ -45,5 +46,5 @@ jobs:
     steps:
       - uses: actions/download-artifact@v4
         with:
-          name: txt2
+          name: ${{ env.FILENAME }}
           path: .
