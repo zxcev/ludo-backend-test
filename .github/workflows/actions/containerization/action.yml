@@ -20,7 +20,7 @@ runs:
     - name: download artifact
       uses: actions/download-artifact@v4
       with:
-        name: "${{ inputs.artifact-name }}"
+        name: ${{ inputs.artifact-name }}
         path: ${{ inputs.artifact-build-path }}
 
     - name: log in to dockerhub
@@ -29,6 +29,7 @@ runs:
         username: ${{ inputs.dockerhub-username }}
         password: ${{ inputs.dockerhub-token }}
     - name: set docker image name with tag
+      shell: bash
       run: |
         ARTIFACT_WITH_TAG=$(echo ${{ inputs.artifact-name }} | sed 's/-/:/' )
         ARTIFACT_WITH_TAG=${ARTIFACT_WITH_TAG%.*}
