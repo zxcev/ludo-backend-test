@@ -12,6 +12,11 @@ inputs:
     required: true
   artifact-build-path:
     required: true
+  app-name:
+    required: true
+  commit-hash:
+    required: true
+          
 
 runs:
   using: composite
@@ -28,13 +33,13 @@ runs:
       with:
         username: ${{ inputs.dockerhub-username }}
         password: ${{ inputs.dockerhub-token }}
-    - name: set docker image name with tag
-      shell: bash
-      run: |
-        ARTIFACT_WITH_TAG=$(echo ${{ inputs.artifact-name }} | sed 's/-/:/' )
-        ARTIFACT_WITH_TAG=${ARTIFACT_WITH_TAG%.*}
-        echo "CONTAINER_IMAGE_PATH=${{ inputs.dockerhub-username }}/$ARTIFACT_WITH_TAG" >> $GITHUB_ENV
-        echo "docker image name:tag will be `$CONTAINER_IMAGE_PATH`"
+    # - name: set docker image name with tag
+    #   shell: bash
+    #   run: |
+    #     ARTIFACT_WITH_TAG=$(echo ${{ inputs.artifact-name }} | sed 's/-/:/' )
+    #     ARTIFACT_WITH_TAG=${ARTIFACT_WITH_TAG%.*}
+    #     echo "CONTAINER_IMAGE_PATH=${{ inputs.dockerhub-username }}/$ARTIFACT_WITH_TAG" >> $GITHUB_ENV
+    #     echo "docker image name:tag will be `$CONTAINER_IMAGE_PATH`"
 
     - name: push docker container image
       uses: docker/build-push-action@v4
@@ -42,5 +47,5 @@ runs:
         context: .
         push: true
         tags: |
-          ${{ env.CONTAINER_IMAGE_PATH }}
-          ${{ inputs.dockerhub-username }}/${{ inputs.artifact-name }}:latest
+          ${{ inputs.dockerhub-username }}/${{ inputs.app-name }}:${{ inputs.commit-hash }}
+          ${{ inputs.dockerhub-username }}/${{ inputs.app-name }}:latest
