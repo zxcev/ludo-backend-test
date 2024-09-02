@@ -30,6 +30,7 @@ jobs:
     outputs:
       artifact-with-tag: ${{ steps.cfg.outputs.artifact-with-tag }}
       artifact-name: ${{ steps.cfg.outputs.artifact-name }}
+      commit-hash: ${{ steps.cfg.outputs.commit-hash }}
       # artifact-with-tag: ludoapp
     steps:
       - name:
@@ -42,6 +43,7 @@ jobs:
           DATE=$(date +%y%m%d)
           COMMIT_HASH=${GITHUB_SHA::7}
           ARTIFACT_NAME="${{ env.APP_NAME }}-$DATE-$COMMIT_HASH-${{ env.ENV }}.jar"
+          echo "commit-hash=$COMMIT_HASH" >> $GITHUB_OUTPUT
           echo "artifact-name=$ARTIFACT_NAME" >> $GITHUB_OUTPUT
           echo "generated artifact-name: $ARTIFACT_NAME"
         # <app>-<env>-<date>-<hash>
@@ -133,6 +135,8 @@ jobs:
           env: ${{ env.ENV }}
           dockerhub-username: ${{ vars.DOCKERHUB_USERNAME }}
           dockerhub-token: ${{ secrets.DOCKERHUB_TOKEN }}
+          app-name: ${{ env.APP_NAME }}
+          commit-hash: ${{ needs.cfg.outputs.commit-hash }}
           artifact-name: ${{ needs.cfg.outputs.artifact-name }}
           artifact-build-path: ${{ env.ARTIFACT_BUILD_PATH }}
 
