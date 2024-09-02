@@ -41,4 +41,6 @@ runs:
       with:
         context: .
         push: true
-        tags: ${{ env.CONTAINER_IMAGE_PATH }}
+        tags: |
+          ${{ env.CONTAINER_IMAGE_PATH }}
+          ${{ inputs.dockerhub-username }}/${{ inputs.artifact-name }}:latest
