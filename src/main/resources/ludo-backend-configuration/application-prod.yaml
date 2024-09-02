@@ -4,9 +4,9 @@ spring:
       enabled: true
 
   datasource:
-    url: jdbc:mysql://35.197.7.73:3306/ludo
-    username: ludo-backend
-    password: ludodb777!
+    url: ${DB_URL:jdbc:mysql://35.197.7.73:3306/ludo}
+    username: ${DB_USERNAME:ludo-backend}
+    password: ${DB_PASSWORD:ludodb777!}
     driver-class-name: com.mysql.cj.jdbc.Driver
 
   data:
