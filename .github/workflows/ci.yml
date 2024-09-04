@@ -58,7 +58,7 @@ jobs:
         uses: ./.github/workflows/actions/trigger
         with:
           pat: ${{ secrets.PAT }}
-          repository: ${{ env.INFRA_REPOSITORY }}
+          repository: ${{ vars.INFRA_REPOSITORY }}
           event-type: ${{ env.PROVISION_TEST_INFRA_EVENT }}
           action-file: ${{ env.PROVISION_TEST_ACTION_FILE }}
 
